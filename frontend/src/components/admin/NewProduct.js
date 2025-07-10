@@ -73,23 +73,14 @@ const NewProduct = ({ history }) => {
     }
 
     const onChange = e => {
-
         const files = Array.from(e.target.files)
 
         setImagesPreview([]);
         setImages([])
 
         files.forEach(file => {
-            const reader = new FileReader();
-
-            reader.onload = () => {
-                if (reader.readyState === 2) {
-                    setImagesPreview(oldArray => [...oldArray, reader.result])
-                    setImages(oldArray => [...oldArray, reader.result])
-                }
-            }
-
-            reader.readAsDataURL(file)
+            setImagesPreview(oldArray => [...oldArray, URL.createObjectURL(file)])
+            setImages(oldArray => [...oldArray, file])
         })
     }
 
@@ -180,7 +171,7 @@ const NewProduct = ({ history }) => {
                                         />
                                         <label className='custom-file-label' htmlFor='customFile'>
                                             Choose Images
-                                     </label>
+                                        </label>
                                     </div>
 
                                     {imagesPreview.map(img => (

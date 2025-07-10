@@ -125,9 +125,9 @@ const ProductDetails = ({ match }) => {
                     <div className="row d-flex justify-content-around">
                         <div className="col-12 col-lg-5 img-fluid" id="product_image">
                             <Carousel pause='hover'>
-                                {product.images && product.images.map(image => (
-                                    <Carousel.Item key={image.public_id}>
-                                        <img className="d-block w-100" src={image.url} alt={product.title} />
+                                {product.images && product.images.map(img => (
+                                    <Carousel.Item key={img.url}>
+                                        <img className="d-block w-100" src={img.url.startsWith('/uploads') ? img.url : img.url} alt={product.name} />
                                     </Carousel.Item>
                                 ))}
                             </Carousel>

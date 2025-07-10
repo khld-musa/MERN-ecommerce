@@ -97,7 +97,6 @@ const UpdateProduct = ({ match, history }) => {
     }
 
     const onChange = e => {
-
         const files = Array.from(e.target.files)
 
         setImagesPreview([]);
@@ -105,16 +104,8 @@ const UpdateProduct = ({ match, history }) => {
         setOldImages([])
 
         files.forEach(file => {
-            const reader = new FileReader();
-
-            reader.onload = () => {
-                if (reader.readyState === 2) {
-                    setImagesPreview(oldArray => [...oldArray, reader.result])
-                    setImages(oldArray => [...oldArray, reader.result])
-                }
-            }
-
-            reader.readAsDataURL(file)
+            setImagesPreview(oldArray => [...oldArray, URL.createObjectURL(file)])
+            setImages(oldArray => [...oldArray, file])
         })
     }
 
@@ -205,7 +196,7 @@ const UpdateProduct = ({ match, history }) => {
                                         />
                                         <label className='custom-file-label' htmlFor='customFile'>
                                             Choose Images
-                                 </label>
+                                        </label>
                                     </div>
 
                                     {oldImages && oldImages.map(img => (
@@ -226,7 +217,7 @@ const UpdateProduct = ({ match, history }) => {
                                     disabled={loading ? true : false}
                                 >
                                     UPDATE
-                            </button>
+                                </button>
 
                             </form>
                         </div>

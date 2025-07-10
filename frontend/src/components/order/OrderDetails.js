@@ -27,7 +27,10 @@ const OrderDetails = ({ match }) => {
 
     const shippingDetails = shippingInfo && `${shippingInfo.address}, ${shippingInfo.city}, ${shippingInfo.postalCode}, ${shippingInfo.country}`
 
-    const isPaid = paymentInfo && paymentInfo.status === 'succeeded' ? true : false
+    // For local bank payment, mark as paid if order is Shipped or Delivered
+    const isPaid = paymentInfo && paymentInfo.method === 'bank'
+        ? (paymentInfo.status === 'succeeded' || orderStatus === 'Shipped' || orderStatus === 'Delivered')
+        : paymentInfo && paymentInfo.status === 'succeeded'
 
     return (
         <Fragment>

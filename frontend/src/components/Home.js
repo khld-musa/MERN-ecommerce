@@ -153,16 +153,38 @@ const Home = ({ match }) => {
                                     <div className="col-6 col-md-9">
                                         <div className="row">
                                             {products.map(product => (
-                                                <Product key={product._id} product={product} col={4} />
+                                                <div key={product._id} className="col-12 col-md-4 mb-4">
+                                                    <div className="card p-3 rounded">
+                                                        <img
+                                                            className="card-img-top mx-auto"
+                                                            src={product.images[0] && product.images[0].url.startsWith('/uploads') ? product.images[0].url : product.images[0]?.url}
+                                                            alt={product.name}
+                                                            style={{ maxHeight: '180px', objectFit: 'contain' }}
+                                                        />
+                                                        <div className="card-body d-flex flex-column">
+                                                            <h5 className="card-title">
+                                                                <a href={`/product/${product._id}`}>{product.name}</a>
+                                                            </h5>
+                                                            <div className="ratings mt-auto">
+                                                                <div className="rating-outer">
+                                                                    <div className="rating-inner" style={{ width: `${(product.ratings / 5) * 100}%` }}></div>
+                                                                </div>
+                                                                <span id="no_of_reviews">({product.numOfReviews} Reviews)</span>
+                                                            </div>
+                                                            <p className="card-text">${product.price}</p>
+                                                            <a href={`/product/${product._id}`} id="view_btn" className="btn btn-block">View Details</a>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             ))}
                                         </div>
                                     </div>
                                 </Fragment>
                             ) : (
-                                    products.map(product => (
-                                        <Product key={product._id} product={product} col={3} />
-                                    ))
-                                )}
+                                products.map(product => (
+                                    <Product key={product._id} product={product} col={3} />
+                                ))
+                            )}
 
                         </div>
                     </section>

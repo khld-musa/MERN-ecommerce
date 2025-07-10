@@ -56,7 +56,7 @@ const Cart = ({ history }) => {
                                     <div className="cart-item" key={item.product}>
                                         <div className="row">
                                             <div className="col-4 col-lg-3">
-                                                <img src={item.image} alt="Laptop" height="90" width="115" />
+                                                <img src={item.image && item.image.startsWith('/uploads') ? item.image : item.image} alt={item.name} height="90" width="115" />
                                             </div>
 
                                             <div className="col-5 col-lg-3">

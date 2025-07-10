@@ -13,6 +13,8 @@ import { UPDATE_ORDER_RESET } from '../../constants/orderConstants'
 const ProcessOrder = ({ match }) => {
 
     const [status, setStatus] = useState('');
+    const [showModal, setShowModal] = useState(false);
+    const [modalImage, setModalImage] = useState('');
 
     const alert = useAlert();
     const dispatch = useDispatch();
@@ -50,7 +52,10 @@ const ProcessOrder = ({ match }) => {
     }
 
     const shippingDetails = shippingInfo && `${shippingInfo.address}, ${shippingInfo.city}, ${shippingInfo.postalCode}, ${shippingInfo.country}`
-    const isPaid = paymentInfo && paymentInfo.status === 'succeeded' ? true : false
+    // For local bank payment, mark as paid if order is Shipped or Delivered
+    const isPaid = paymentInfo && paymentInfo.method === 'bank'
+        ? (paymentInfo.status === 'succeeded' || orderStatus === 'Shipped' || orderStatus === 'Delivered')
+        : paymentInfo && paymentInfo.status === 'succeeded'
 
     return (
         <Fragment>
@@ -78,6 +83,42 @@ const ProcessOrder = ({ match }) => {
 
                                     <h4 className="my-4">Payment</h4>
                                     <p className={isPaid ? "greenColor" : "redColor"}><b>{isPaid ? "PAID" : "NOT PAID"}</b></p>
+
+                                    {paymentInfo && paymentInfo.method === 'bank' && paymentInfo.bankStatement && (
+                                        <div className="mb-3">
+                                            <h5>Bank Statement:</h5>
+                                            <img
+                                                src={`/api/v1/bank-image/${paymentInfo.bankStatement.split('/').pop()}`}
+                                                alt="Bank Statement"
+                                                style={{ maxWidth: '200px', maxHeight: '200px', border: '1px solid #ccc', marginTop: '10px', cursor: 'pointer' }}
+                                                onClick={() => {
+                                                    setModalImage(`/api/v1/bank-image/${paymentInfo.bankStatement.split('/').pop()}`);
+                                                    setShowModal(true);
+                                                }}
+                                            />
+                                            {/* Modal */}
+                                            {showModal && (
+                                                <div style={{
+                                                    position: 'fixed',
+                                                    top: 0,
+                                                    left: 0,
+                                                    width: '100vw',
+                                                    height: '100vh',
+                                                    background: 'rgba(0,0,0,0.7)',
+                                                    display: 'flex',
+                                                    alignItems: 'center',
+                                                    justifyContent: 'center',
+                                                    zIndex: 9999
+                                                }} onClick={() => setShowModal(false)}>
+                                                    <img
+                                                        src={modalImage}
+                                                        alt="Bank Statement Large"
+                                                        style={{ maxWidth: '90vw', maxHeight: '90vh', background: '#fff', padding: 10, borderRadius: 8 }}
+                                                    />
+                                                </div>
+                                            )}
+                                        </div>
+                                    )}
 
                                     <h4 className="my-4">Stripe ID</h4>
                                     <p><b>{paymentInfo && paymentInfo.id}</b></p>

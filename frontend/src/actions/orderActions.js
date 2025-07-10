@@ -48,6 +48,26 @@ export const createOrder = (order) => async (dispatch, getState) => {
     }
 }
 
+// Create order with bank payment
+export const createBankPaymentOrder = (order, bankImage) => async (dispatch) => {
+    try {
+        dispatch({ type: CREATE_ORDER_REQUEST })
+        const formData = new FormData();
+        formData.append('itemsPrice', order.itemsPrice);
+        formData.append('shippingPrice', order.shippingPrice);
+        formData.append('taxPrice', order.taxPrice);
+        formData.append('totalPrice', order.totalPrice);
+        formData.append('shippingInfo', JSON.stringify(order.shippingInfo));
+        formData.append('orderItems', JSON.stringify(order.orderItems));
+        formData.append('bankStatement', bankImage);
+        const config = { headers: { 'Content-Type': 'multipart/form-data' } };
+        const { data } = await axios.post('/api/v1/bank-payment', formData, config);
+        dispatch({ type: CREATE_ORDER_SUCCESS, payload: data });
+    } catch (error) {
+        dispatch({ type: CREATE_ORDER_FAIL, payload: error.response.data.message });
+    }
+}
+
 // Get curretly logged in user orders
 export const myOrders = () => async (dispatch) => {
     try {

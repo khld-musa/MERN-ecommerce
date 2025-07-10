@@ -25,6 +25,8 @@ const auth = require('./routes/auth');
 const payment = require('./routes/payment');
 const order = require('./routes/order');
 const cart = require('./routes/cart');
+const bankPayment = require('./routes/bankPayment');
+const bankImage = require('./routes/bankImage');
 
 
 app.use('/api/v1', products)
@@ -32,6 +34,10 @@ app.use('/api/v1', auth)
 app.use('/api/v1', payment)
 app.use('/api/v1', order)
 app.use('/api/v1', cart)
+app.use('/api/v1', bankPayment)
+app.use('/api/v1', bankImage)
+
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 if (process.env.NODE_ENV === 'PRODUCTION') {
     app.use(express.static(path.join(__dirname, '../frontend/build')))

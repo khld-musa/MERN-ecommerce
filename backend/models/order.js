@@ -59,6 +59,12 @@ const orderSchema = mongoose.Schema({
         },
         status: {
             type: String
+        },
+        method: {
+            type: String
+        },
+        bankStatement: {
+            type: String
         }
     },
     paidAt: {
