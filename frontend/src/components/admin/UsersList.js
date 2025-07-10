@@ -111,6 +111,7 @@ const UsersList = ({ history }) => {
                                 bordered
                                 striped
                                 hover
+                                responsive
                             />
                         )}
 

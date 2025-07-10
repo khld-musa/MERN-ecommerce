@@ -132,7 +132,7 @@ const ProductReviews = () => {
                                         className="btn btn-primary btn-block py-2"
                                     >
                                         SEARCH
-								    </button>
+                                    </button>
                                 </ form>
                             </div>
 
@@ -145,10 +145,11 @@ const ProductReviews = () => {
                                 bordered
                                 striped
                                 hover
+                                responsive
                             />
                         ) : (
-                                <p className="mt-5 text-center">No Reviews.</p>
-                            )}
+                            <p className="mt-5 text-center">No Reviews.</p>
+                        )}
 
 
                     </Fragment>

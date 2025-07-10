@@ -37,6 +37,7 @@ import {
     LOGOUT_FAIL,
     CLEAR_ERRORS
 } from '../constants/userConstants'
+import { fetchUserCart, clearCart } from './cartActions'
 
 // Login
 export const login = (email, password) => async (dispatch) => {
@@ -56,6 +57,8 @@ export const login = (email, password) => async (dispatch) => {
             type: LOGIN_SUCCESS,
             payload: data.user
         })
+        // Fetch user cart after login
+        dispatch(fetchUserCart())
 
     } catch (error) {
         dispatch({
@@ -230,6 +233,8 @@ export const logout = () => async (dispatch) => {
         dispatch({
             type: LOGOUT_SUCCESS,
         })
+        // Clear cart on logout
+        dispatch(clearCart())
 
     } catch (error) {
         dispatch({

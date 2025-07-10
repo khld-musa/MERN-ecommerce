@@ -41,7 +41,21 @@ const userSchema = new mongoose.Schema({
         default: Date.now
     },
     resetPasswordToken: String,
-    resetPasswordExpire: Date
+    resetPasswordExpire: Date,
+    cart: [
+        {
+            product: {
+                type: mongoose.Schema.ObjectId,
+                ref: 'Product',
+                required: true
+            },
+            name: String,
+            price: Number,
+            image: String,
+            stock: Number,
+            quantity: Number
+        }
+    ]
 
 })
 

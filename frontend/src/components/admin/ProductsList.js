@@ -114,6 +114,7 @@ const ProductsList = ({ history }) => {
                                 bordered
                                 striped
                                 hover
+                                responsive
                             />
                         )}
 

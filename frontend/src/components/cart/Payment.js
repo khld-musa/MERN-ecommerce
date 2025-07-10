@@ -6,6 +6,7 @@ import CheckoutSteps from './CheckoutSteps'
 import { useAlert } from 'react-alert'
 import { useDispatch, useSelector } from 'react-redux'
 import { createOrder, clearErrors } from '../../actions/orderActions'
+import { clearCart } from '../../actions/cartActions'
 
 import { useStripe, useElements, CardNumberElement, CardExpiryElement, CardCvcElement } from '@stripe/react-stripe-js'
 
@@ -107,7 +108,7 @@ const Payment = ({ history }) => {
                     }
 
                     dispatch(createOrder(order))
-
+                    dispatch(clearCart())
                     history.push('/success')
                 } else {
                     alert.error('There is some issue while payment processing')
