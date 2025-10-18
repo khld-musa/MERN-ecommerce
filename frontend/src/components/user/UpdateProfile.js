@@ -115,7 +115,7 @@ const UpdateProfile = ({ history }) => {
                                         />
                                     </figure>
                                 </div>
-                                <div className='custom-file'>
+                                {/* <div className='custom-file'>
                                     <input
                                         type='file'
                                         name='avatar'
@@ -127,7 +127,7 @@ const UpdateProfile = ({ history }) => {
                                     <label className='custom-file-label' htmlFor='customFile'>
                                         Choose Avatar
                                 </label>
-                                </div>
+                                </div> */}
                             </div>
                         </div>
 
