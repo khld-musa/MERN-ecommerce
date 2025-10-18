@@ -12,6 +12,7 @@ const Login = ({ history, location }) => {
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [errors, setErrors] = useState({});
 
     const alert = useAlert();
     const dispatch = useDispatch();
@@ -33,9 +34,28 @@ const Login = ({ history, location }) => {
 
     }, [dispatch, alert, isAuthenticated, error, history])
 
+    const validate = () => {
+        const newErrors = {};
+        if (!email) {
+            newErrors.email = 'Email is required';
+        } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+            newErrors.email = 'Invalid email format';
+        }
+        if (!password) {
+            newErrors.password = 'Password is required';
+        } else if (password.length < 6) {
+            newErrors.password = 'Password must be at least 6 characters';
+        }
+        return newErrors;
+    };
+
     const submitHandler = (e) => {
         e.preventDefault();
-        dispatch(login(email, password))
+        const validationErrors = validate();
+        setErrors(validationErrors);
+        if (Object.keys(validationErrors).length === 0) {
+            dispatch(login(email, password));
+        }
     }
 
     return (
@@ -48,15 +68,21 @@ const Login = ({ history, location }) => {
                         <div className="col-10 col-lg-5">
                             <form className="shadow-lg" onSubmit={submitHandler}>
                                 <h1 className="mb-3">Login</h1>
+                                {errors.general && (
+                                    <div className="alert alert-danger">{errors.general}</div>
+                                )}
                                 <div className="form-group">
                                     <label htmlFor="email_field">Email</label>
                                     <input
-                                        type="email"
+                                        type="text"
                                         id="email_field"
                                         className="form-control"
                                         value={email}
                                         onChange={(e) => setEmail(e.target.value)}
                                     />
+                                    {errors.email && (
+                                        <small className="text-danger">{errors.email}</small>
+                                    )}
                                 </div>
 
                                 <div className="form-group">
@@ -68,6 +94,9 @@ const Login = ({ history, location }) => {
                                         value={password}
                                         onChange={(e) => setPassword(e.target.value)}
                                     />
+                                    {errors.password && (
+                                        <small className="text-danger">{errors.password}</small>
+                                    )}
                                 </div>
 
                                 <Link to="/password/forgot" className="float-right mb-4">Forgot Password?</Link>

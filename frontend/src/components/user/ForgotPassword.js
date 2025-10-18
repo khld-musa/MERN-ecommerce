@@ -9,6 +9,7 @@ import { forgotPassword, clearErrors } from '../../actions/userActions'
 const ForgotPassword = () => {
 
     const [email, setEmail] = useState('')
+    const [errors, setErrors] = useState({})
 
     const alert = useAlert();
     const dispatch = useDispatch();
@@ -28,13 +29,25 @@ const ForgotPassword = () => {
 
     }, [dispatch, alert, error, message])
 
+    const validate = () => {
+        const newErrors = {};
+        if (!email) {
+            newErrors.email = 'Email is required';
+        } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+            newErrors.email = 'Invalid email format';
+        }
+        return newErrors;
+    };
+
     const submitHandler = (e) => {
         e.preventDefault();
-
-        const formData = new FormData();
-        formData.set('email', email);
-
-        dispatch(forgotPassword(formData))
+        const validationErrors = validate();
+        setErrors(validationErrors);
+        if (Object.keys(validationErrors).length === 0) {
+            const formData = new FormData();
+            formData.set('email', email);
+            dispatch(forgotPassword(formData));
+        }
     }
 
     return (
@@ -45,6 +58,9 @@ const ForgotPassword = () => {
                 <div className="col-10 col-lg-5">
                     <form className="shadow-lg" onSubmit={submitHandler}>
                         <h1 className="mb-3">Forgot Password</h1>
+                        {errors.general && (
+                            <div className="alert alert-danger">{errors.general}</div>
+                        )}
                         <div className="form-group">
                             <label htmlFor="email_field">Enter Email</label>
                             <input
@@ -54,6 +70,9 @@ const ForgotPassword = () => {
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
                             />
+                            {errors.email && (
+                                <small className="text-danger">{errors.email}</small>
+                            )}
                         </div>
 
                         <button
@@ -62,7 +81,7 @@ const ForgotPassword = () => {
                             className="btn btn-block py-3"
                             disabled={loading ? true : false} >
                             Send Email
-                    </button>
+                        </button>
 
                     </form>
                 </div>

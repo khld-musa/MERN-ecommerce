@@ -18,6 +18,7 @@ const Register = ({ history }) => {
 
     const [avatar, setAvatar] = useState('')
     const [avatarPreview, setAvatarPreview] = useState('/images/default_avatar.jpg')
+    const [errors, setErrors] = useState({});
 
     const alert = useAlert();
     const dispatch = useDispatch();
@@ -37,32 +38,44 @@ const Register = ({ history }) => {
 
     }, [dispatch, alert, isAuthenticated, error, history])
 
+    const validate = () => {
+        const newErrors = {};
+        if (!name) {
+            newErrors.name = 'Name is required';
+        } else if (!/^\d{8}$/.test(name)) {
+            newErrors.name = 'Name must be exactly 8 digits';
+        }
+        if (!email) {
+            newErrors.email = 'Email is required';
+        } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+            newErrors.email = 'Invalid email format';
+        }
+        if (!password) {
+            newErrors.password = 'Password is required';
+        } else if (password.length < 6) {
+            newErrors.password = 'Password must be at least 6 characters';
+        }
+        return newErrors;
+    };
+
     const submitHandler = (e) => {
         e.preventDefault();
-
-        const formData = new FormData();
-        formData.set('name', name);
-        formData.set('email', email);
-        formData.set('password', password);
-        formData.set('avatar', avatar);
-
-        dispatch(register(formData))
+        const validationErrors = validate();
+        setErrors(validationErrors);
+        if (Object.keys(validationErrors).length === 0) {
+            const formData = new FormData();
+            formData.set('name', name);
+            formData.set('email', email);
+            formData.set('password', password);
+            formData.set('avatar', avatar);
+            dispatch(register(formData));
+        }
     }
 
     const onChange = e => {
+        // Avatar selection is disabled
         if (e.target.name === 'avatar') {
-
-            const reader = new FileReader();
-
-            reader.onload = () => {
-                if (reader.readyState === 2) {
-                    setAvatarPreview(reader.result)
-                    setAvatar(reader.result)
-                }
-            }
-
-            reader.readAsDataURL(e.target.files[0])
-
+            return;
         } else {
             setUser({ ...user, [e.target.name]: e.target.value })
         }
@@ -77,29 +90,39 @@ const Register = ({ history }) => {
                 <div className="col-10 col-lg-5">
                     <form className="shadow-lg" onSubmit={submitHandler} encType='multipart/form-data'>
                         <h1 className="mb-3">Register</h1>
+                        {errors.general && (
+                            <div className="alert alert-danger">{errors.general}</div>
+                        )}
 
                         <div className="form-group">
-                            <label htmlFor="email_field">Name</label>
+                            <label htmlFor="name_field">name</label>
                             <input
-                                type="name"
+                                type="text"
                                 id="name_field"
                                 className="form-control"
                                 name='name'
                                 value={name}
                                 onChange={onChange}
+                                autoComplete="off"
                             />
+                            {errors.name && (
+                                <small className="text-danger">{errors.name}</small>
+                            )}
                         </div>
 
                         <div className="form-group">
                             <label htmlFor="email_field">Email</label>
                             <input
-                                type="email"
+                                type="text"
                                 id="email_field"
                                 className="form-control"
                                 name='email'
                                 value={email}
                                 onChange={onChange}
                             />
+                            {errors.email && (
+                                <small className="text-danger">{errors.email}</small>
+                            )}
                         </div>
 
                         <div className="form-group">
@@ -112,6 +135,9 @@ const Register = ({ history }) => {
                                 value={password}
                                 onChange={onChange}
                             />
+                            {errors.password && (
+                                <small className="text-danger">{errors.password}</small>
+                            )}
                         </div>
 
                         <div className='form-group'>
@@ -132,11 +158,11 @@ const Register = ({ history }) => {
                                         name='avatar'
                                         className='custom-file-input'
                                         id='customFile'
-                                        accept="iamges/*"
-                                        onChange={onChange}
+                                        accept="images/*"
+                                        disabled
                                     />
                                     <label className='custom-file-label' htmlFor='customFile'>
-                                        Choose Avatar
+                                        Default Avatar Only
                                     </label>
                                 </div>
                             </div>

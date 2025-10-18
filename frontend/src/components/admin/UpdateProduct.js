@@ -17,6 +17,7 @@ const UpdateProduct = ({ match, history }) => {
     const [stock, setStock] = useState(0);
     const [seller, setSeller] = useState('');
     const [images, setImages] = useState([]);
+    const [errors, setErrors] = useState({});
 
     const [oldImages, setOldImages] = useState([]);
     const [imagesPreview, setImagesPreview] = useState([])
@@ -78,22 +79,35 @@ const UpdateProduct = ({ match, history }) => {
     }, [dispatch, alert, error, isUpdated, history, updateError, product, productId])
 
 
+    const validate = () => {
+        const newErrors = {};
+        if (!name) newErrors.name = 'Name is required';
+        if (!price || isNaN(price) || Number(price) <= 0) newErrors.price = 'Valid price is required';
+        if (!description) newErrors.description = 'Description is required';
+        if (!category) newErrors.category = 'Category is required';
+        if (!stock || isNaN(stock) || Number(stock) < 0) newErrors.stock = 'Valid stock is required';
+        if (!seller) newErrors.seller = 'Seller name is required';
+        // Images are optional for update, but you can require at least one if needed
+        return newErrors;
+    };
+
     const submitHandler = (e) => {
         e.preventDefault();
-
-        const formData = new FormData();
-        formData.set('name', name);
-        formData.set('price', price);
-        formData.set('description', description);
-        formData.set('category', category);
-        formData.set('stock', stock);
-        formData.set('seller', seller);
-
-        images.forEach(image => {
-            formData.append('images', image)
-        })
-
-        dispatch(updateProduct(product._id, formData))
+        const validationErrors = validate();
+        setErrors(validationErrors);
+        if (Object.keys(validationErrors).length === 0) {
+            const formData = new FormData();
+            formData.set('name', name);
+            formData.set('price', price);
+            formData.set('description', description);
+            formData.set('category', category);
+            formData.set('stock', stock);
+            formData.set('seller', seller);
+            images.forEach(image => {
+                formData.append('images', image)
+            });
+            dispatch(updateProduct(product._id, formData));
+        }
     }
 
     const onChange = e => {
@@ -123,7 +137,9 @@ const UpdateProduct = ({ match, history }) => {
                         <div className="wrapper my-5">
                             <form className="shadow-lg" onSubmit={submitHandler} encType='multipart/form-data'>
                                 <h1 className="mb-4">Update Product</h1>
-
+                                {errors.general && (
+                                    <div className="alert alert-danger">{errors.general}</div>
+                                )}
                                 <div className="form-group">
                                     <label htmlFor="name_field">Name</label>
                                     <input
@@ -133,8 +149,10 @@ const UpdateProduct = ({ match, history }) => {
                                         value={name}
                                         onChange={(e) => setName(e.target.value)}
                                     />
+                                    {errors.name && (
+                                        <small className="text-danger">{errors.name}</small>
+                                    )}
                                 </div>
-
                                 <div className="form-group">
                                     <label htmlFor="price_field">Price</label>
                                     <input
@@ -144,21 +162,28 @@ const UpdateProduct = ({ match, history }) => {
                                         value={price}
                                         onChange={(e) => setPrice(e.target.value)}
                                     />
+                                    {errors.price && (
+                                        <small className="text-danger">{errors.price}</small>
+                                    )}
                                 </div>
-
                                 <div className="form-group">
                                     <label htmlFor="description_field">Description</label>
                                     <textarea className="form-control" id="description_field" rows="8" value={description} onChange={(e) => setDescription(e.target.value)}></textarea>
+                                    {errors.description && (
+                                        <small className="text-danger">{errors.description}</small>
+                                    )}
                                 </div>
-
                                 <div className="form-group">
                                     <label htmlFor="category_field">Category</label>
                                     <select className="form-control" id="category_field" value={category} onChange={(e) => setCategory(e.target.value)}>
+                                        <option value="">Select</option>
                                         {categories.map(category => (
                                             <option key={category} value={category} >{category}</option>
                                         ))}
-
                                     </select>
+                                    {errors.category && (
+                                        <small className="text-danger">{errors.category}</small>
+                                    )}
                                 </div>
                                 <div className="form-group">
                                     <label htmlFor="stock_field">Stock</label>
@@ -169,8 +194,10 @@ const UpdateProduct = ({ match, history }) => {
                                         value={stock}
                                         onChange={(e) => setStock(e.target.value)}
                                     />
+                                    {errors.stock && (
+                                        <small className="text-danger">{errors.stock}</small>
+                                    )}
                                 </div>
-
                                 <div className="form-group">
                                     <label htmlFor="seller_field">Seller Name</label>
                                     <input
@@ -180,8 +207,10 @@ const UpdateProduct = ({ match, history }) => {
                                         value={seller}
                                         onChange={(e) => setSeller(e.target.value)}
                                     />
+                                    {errors.seller && (
+                                        <small className="text-danger">{errors.seller}</small>
+                                    )}
                                 </div>
-
                                 <div className='form-group'>
                                     <label>Images</label>
 
