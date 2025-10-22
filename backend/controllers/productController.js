@@ -120,7 +120,16 @@ exports.deleteProduct = catchAsyncErrors(async (req, res, next) => {
 
     // Deleting images associated with the product
     for (let i = 0; i < product.images.length; i++) {
-        const result = await cloudinary.v2.uploader.destroy(product.images[i].public_id)
+        // Only attempt to delete from Cloudinary if public_id exists
+        if (product.images[i].public_id) {
+            await cloudinary.v2.uploader.destroy(product.images[i].public_id);
+        } else if (product.images[i].url && product.images[i].url.startsWith('/uploads/products/')) {
+            // Optionally delete local file
+            const fs = require('fs');
+            const path = require('path');
+            const filePath = path.join(__dirname, '..', product.images[i].url);
+            fs.unlink(filePath, err => { /* ignore errors */ });
+        }
     }
 
     await product.remove();

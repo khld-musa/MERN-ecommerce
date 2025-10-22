@@ -11,13 +11,12 @@ const Shipping = ({ history }) => {
 
     const countriesList = Object.values(countries)
 
-    const { shippingInfo } = useSelector(state => state.cart)
-
-    const [address, setAddress] = useState(shippingInfo.address)
-    const [city, setCity] = useState(shippingInfo.city)
-    const [postalCode, setPostalCode] = useState(shippingInfo.postalCode)
-    const [phoneNo, setPhoneNo] = useState(shippingInfo.phoneNo)
-    const [country, setCountry] = useState(shippingInfo.country)
+    // Always start with empty fields so user can input their info
+    const [address, setAddress] = useState('');
+    const [city, setCity] = useState('');
+    const [postalCode, setPostalCode] = useState('');
+    const [phoneNo, setPhoneNo] = useState('');
+    const [country, setCountry] = useState('');
 
     const dispatch = useDispatch();
 
@@ -112,7 +111,7 @@ const Shipping = ({ history }) => {
                             className="btn btn-block py-3"
                         >
                             CONTINUE
-                            </button>
+                        </button>
                     </form>
                 </div>
             </div>
